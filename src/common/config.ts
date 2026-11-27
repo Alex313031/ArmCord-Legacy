@@ -289,8 +289,14 @@ export function setFirstRun(value: boolean): void {
     firstRun = value;
 }
 
+// The updater installs builds from Legcord's own releases, which are made with
+// stock Electron and would replace this fork with one that cannot start on the
+// Windows versions it exists for. It stays off until there are releases of this
+// fork to point it at; the automaticUpdates setting is kept so configs still load.
+const UPDATER_ENABLED: boolean = false;
+
 export function handleAutomaticUpdates(settings: Settings): void {
-    if (settings.automaticUpdates) {
+    if (UPDATER_ENABLED && settings.automaticUpdates) {
         require("../updater.js");
     }
 }

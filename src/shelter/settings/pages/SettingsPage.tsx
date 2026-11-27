@@ -147,7 +147,6 @@ export function SettingsPage() {
             t["settings-hardwareAcceleration"],
             t["settings-sdpH264BaselineRewrite"],
             t["settings-vaapi"],
-            t["settings-automaticClientUpdates"],
             t["settings-disableHttpCache"],
             t["settings-additionalArguments"],
             t["settings-noBundleUpdates"],
@@ -903,17 +902,6 @@ export function SettingsPage() {
                         </SwitchItem>
                     </SearchableSetting>
                 </Show>
-                <SearchableSetting
-                    keywords={[t["settings-automaticClientUpdates"], t["settings-automaticClientUpdates-desc"]]}
-                >
-                    <SwitchItem
-                        note={t["settings-automaticClientUpdates-desc"]}
-                        value={settings.automaticUpdates}
-                        onChange={(e: boolean) => setConfig("automaticUpdates", e, true)}
-                    >
-                        {t["settings-automaticClientUpdates"]}
-                    </SwitchItem>
-                </SearchableSetting>
                 <SearchableSetting keywords={[t["settings-disableHttpCache"], t["settings-disableHttpCache-desc"]]}>
                     <SwitchItem
                         note={t["settings-disableHttpCache-desc"]}
