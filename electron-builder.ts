@@ -135,8 +135,15 @@ export const config: Configuration = {
         "license.txt",
     ],
 
+    // Electron for Legacy Windows: https://github.com/Alex313031/electron-legacy
+    // The version is spelled out because the dependency is a git URL. The
+    // mirror ends at download/ because electron-builder 26 fetches through
+    // @electron/get, which adds the "v<version>/" directory itself.
+    electronVersion: "44.11.5",
     electronDownload: {
         cache: ".cache",
+        version: "44.11.5",
+        mirror: "https://github.com/Alex313031/electron-legacy/releases/download/",
     },
 
     electronFuses: {

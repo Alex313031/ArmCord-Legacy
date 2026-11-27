@@ -4,7 +4,7 @@
     "description": "Legcord is a custom client designed to enhance your Discord experience while keeping everything lightweight.",
     "main": "ts-out/main.js",
     "engines": {
-        "node": ">=26"
+        "node": ">=24"
     },
     "scripts": {
         "build:dev": "rollup -c --environment BUILD:dev && node --experimental-strip-types scripts/copyVenmic.ts",
@@ -37,7 +37,7 @@
         "@rolldown-plugin/solid": "^0.1.0",
         "@rollup/plugin-esm-shim": "^0.1.8",
         "@types/adm-zip": "^0.5.8",
-        "@types/node": "^26.1.1",
+        "@types/node": "^24.19.4",
         "@types/ws": "^8.18.1",
         "@uwu/lune": "^1.6.3",
         "@uwu/shelter-defs": "^1.5.1",
@@ -45,7 +45,7 @@
         "@xmldom/xmldom": "^0.9.10",
         "app-builder-lib": "^26.16.1",
         "babel-preset-solid": "^1.9.12",
-        "electron": "44.9.0",
+        "electron": "git+https://github.com/Alex313031/electron-legacy#v44.11.5",
         "electron-builder": "26.16.1",
         "lucide-solid": "^1.26.0",
         "monaco-editor": "0.56.0",

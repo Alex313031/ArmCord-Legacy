@@ -2,6 +2,10 @@ allowBuilds:
   "@parcel/watcher": true
   "@vencord/venmic": true
   electron-winstaller: true
+  # electron-legacy downloads its binary in postinstall. pnpm only accepts a
+  # git-hosted package here by its full id, so this line names the commit the
+  # v44.11.5 tag points at and has to change whenever the Electron tag does.
+  electron@https://codeload.github.com/Alex313031/electron-legacy/tar.gz/35c08998b99590393cc3a14488ad6c0e38dcc8ea: true
   esbuild: true
   koffi: true
 
