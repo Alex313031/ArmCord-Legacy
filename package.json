@@ -1,7 +1,7 @@
 {
     "name": "legcord",
     "version": "1.3.1",
-    "description": "Legcord is a custom client designed to enhance your Discord experience while keeping everything lightweight.",
+    "description": "Legcord is a custom client designed to enhance your Discord experience while keeping everything lightweight. Legacy OS Builds.",
     "main": "ts-out/main.js",
     "engines": {
         "node": ">=24"
@@ -26,17 +26,18 @@
     },
     "repository": {
         "type": "git",
-        "url": "git+https://github.com/Legcord/Legcord.git"
+        "url": "git+https://github.com/Alex313031/ArmCord-Win7.git"
     },
-    "author": "smartfrigde",
+    "author": "Alex313031",
     "license": "OSL-3.0",
     "type": "module",
     "bugs": {
-        "url": "https://github.com/Legcord/Legcord/issues"
+        "url": "https://github.com/Alex313031/ArmCord-Win7/issues"
     },
-    "homepage": "https://github.com/Legcord/Legcord#readme",
+    "homepage": "https://github.com/Alex313031/ArmCord-Win7#readme",
     "devDependencies": {
         "@biomejs/biome": "2.5.5",
+        "@electron/fuses": "1.8.0",
         "@rolldown-plugin/solid": "^0.1.0",
         "@rollup/plugin-esm-shim": "^0.1.8",
         "@types/adm-zip": "^0.5.8",
@@ -46,10 +47,10 @@
         "@uwu/shelter-defs": "^1.5.1",
         "@uwu/shelter-ui": "^0.0.6",
         "@xmldom/xmldom": "^0.9.10",
-        "app-builder-lib": "^26.16.1",
+        "app-builder-lib": "24.13.3",
         "babel-preset-solid": "^1.9.12",
         "electron": "git+https://github.com/Alex313031/electron-legacy#v44.11.5",
-        "electron-builder": "26.16.1",
+        "electron-builder": "24.13.3",
         "lucide-solid": "^1.26.0",
         "monaco-editor": "0.56.0",
         "rolldown": "1.2.13",

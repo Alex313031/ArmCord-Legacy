@@ -1,33 +1,30 @@
 import type { Configuration } from "electron-builder";
 
-import { applyAppImageSandboxFix } from "./scripts/build/sandboxFix.mjs";
 import debianLicence from "./scripts/spdxLicenceDebianFormat";
-import { ACTION_FRIENDLY_NAMES, EXCLUDED_FROM_SHORTCUTS, ValidActions } from "./src/common/commandDefinitions";
 
-const desktopActions = (exec: "AppRun" | "/opt/Legcord/legcord") =>
-    Object.fromEntries(
-        (Object.values(ValidActions) as ValidActions[])
-            .filter((action) => !EXCLUDED_FROM_SHORTCUTS.includes(action))
-            .map((action) => [
-                action,
-                {
-                    Name: ACTION_FRIENDLY_NAMES[action],
-                    Exec: `${exec} --${action} %U`,
-                },
-            ]),
-    );
-
-const availableActions = (Object.values(ValidActions) as ValidActions[])
-    .filter((action) => !EXCLUDED_FROM_SHORTCUTS.includes(action))
-    .join(";");
+// This file is written for electron-builder 24.13.3, not the 26.x upstream
+// uses. 26 no longer produces Windows installers that start on Windows 7 and
+// older, which is what this fork is for. Three things upstream's config relies
+// on do not exist in 24:
+//   - electronFuses: done by the afterPack hook in scripts/build/fuses.mjs
+//   - toolsets: 24 has one AppImage toolchain and no setting for it
+//   - desktopActions: 24 writes a flat [Desktop Entry] only, so the Linux
+//     launcher shortcuts for the command line actions are not generated
+// The two hooks are given as paths rather than imported: 24 compiles this file
+// into a cache directory before loading it, and an imported .mjs is not there.
 
 export const config: Configuration = {
-    appId: "app.legcord.Legcord",
+    // Not upstream's id, so this build installs beside a stock Legcord rather
+    // than over it, and Windows groups its windows separately.
+    appId: "com.alex313031.legcord",
     productName: "Legcord",
+    generateUpdatesFilesForAllChannels: false,
     // Biome treats electron-builder macro placeholders as template syntax.
     // biome-ignore lint/suspicious/noTemplateCurlyInString: electron-builder expands these placeholders.
-    artifactName: "Legcord-${version}-${os}-${arch}.${ext}",
-    beforePack: applyAppImageSandboxFix,
+    artifactName: "Legcord_${version}_${os}_${arch}.${ext}",
+    extraFiles: [{ from: "assets/icon.png" }],
+    beforePack: "./scripts/build/sandboxFix.mjs",
+    afterPack: "./scripts/build/fuses.mjs",
     protocols: [
         {
             name: "Discord",
@@ -37,6 +34,10 @@ export const config: Configuration = {
     mac: {
         category: "public.app-category.social-networking",
         darkModeSupport: true,
+        icon: "build/icon.icns",
+        target: ["dmg", "zip"],
+        // biome-ignore lint/suspicious/noTemplateCurlyInString: electron-builder expands these placeholders.
+        artifactName: "Legcord_${version}_macos_${arch}.${ext}",
         notarize: true,
         extendInfo: {
             NSMicrophoneUsageDescription: "Legcord requires access to the microphone to function properly.",
@@ -51,23 +52,18 @@ export const config: Configuration = {
     },
 
     linux: {
-        icon: "build/icon.icns",
-        target: ["AppImage", "deb", "rpm", "tar.gz"],
-        maintainer: "linux@legcord.app",
+        icon: "build/icons",
+        target: ["zip", "AppImage", "deb", "rpm", "tar.gz"],
+        maintainer: "Alex313031",
+        vendor: "Alex313031",
+        synopsis:
+            "Legcord is a custom client designed to enhance your Discord experience while keeping everything lightweight. Legacy OS Builds.",
         category: "Network",
+        executableName: "legcord",
+        // biome-ignore lint/suspicious/noTemplateCurlyInString: electron-builder expands these placeholders.
+        artifactName: "legcord_${version}_${arch}.${ext}",
         desktop: {
-            entry: {
-                StartupWMClass: "legcord",
-            },
-        },
-    },
-
-    appImage: {
-        desktop: {
-            entry: {
-                Actions: availableActions,
-            },
-            desktopActions: desktopActions("AppRun"),
+            StartupWMClass: "legcord",
         },
     },
 
@@ -75,16 +71,37 @@ export const config: Configuration = {
         depends: ["gtk3", "libnotify", "xdg-utils", "at-spi2-core", "alsa-lib", "nspr", "nss"],
     },
 
+    win: {
+        target: ["zip", "portable", "nsis"],
+        icon: "build/icon.ico",
+        executableName: "Legcord",
+        // biome-ignore lint/suspicious/noTemplateCurlyInString: electron-builder expands these placeholders.
+        artifactName: "Legcord_${version}_${arch}.${ext}",
+    },
+
     nsis: {
+        shortcutName: "Legcord",
+        // biome-ignore lint/suspicious/noTemplateCurlyInString: electron-builder expands these placeholders.
+        artifactName: "Legcord_setup_${version}_${arch}.${ext}",
+        // biome-ignore lint/suspicious/noTemplateCurlyInString: electron-builder expands these placeholders.
+        uninstallDisplayName: "Legcord ${version}",
+        license: "license.txt",
+        include: "build/installer.nsh",
+        deleteAppDataOnUninstall: false,
         oneClick: false,
         allowToChangeInstallationDirectory: true,
     },
 
+    portable: {
+        // biome-ignore lint/suspicious/noTemplateCurlyInString: electron-builder expands these placeholders.
+        artifactName: "Legcord_portable_${version}_${arch}.${ext}",
+    },
+
     appx: {
-        applicationId: "smartfrigde.Legcord",
+        applicationId: "alex313031.Legcord",
         identityName: "53758smartfrigde.Legcord",
         publisher: "CN=EAB3A6D3-7145-4623-8176-D579F573F339",
-        publisherDisplayName: "smartfrigde",
+        publisherDisplayName: "Alex313031",
         backgroundColor: "white",
         showNameOnTiles: true,
     },
@@ -115,12 +132,6 @@ export const config: Configuration = {
             "libgtk3.0 | libgtk-3-0",
             "at-spi2-common",
         ],
-        desktop: {
-            entry: {
-                Actions: availableActions,
-            },
-            desktopActions: desktopActions("/opt/Legcord/legcord"),
-        },
         fpm: [`${debianLicence()}=/usr/share/doc/legcord/copyright`],
     },
 
@@ -137,27 +148,13 @@ export const config: Configuration = {
 
     // Electron for Legacy Windows: https://github.com/Alex313031/electron-legacy
     // The version is spelled out because the dependency is a git URL. The
-    // mirror ends at download/ because electron-builder 26 fetches through
-    // @electron/get, which adds the "v<version>/" directory itself.
+    // mirror ends in "v" because electron-builder 24 appends only the bare
+    // version number, and the release tags are "v<version>".
     electronVersion: "44.11.5",
     electronDownload: {
         cache: ".cache",
         version: "44.11.5",
-        mirror: "https://github.com/Alex313031/electron-legacy/releases/download/",
-    },
-
-    electronFuses: {
-        runAsNode: false,
-        enableCookieEncryption: false,
-        enableNodeOptionsEnvironmentVariable: false,
-        enableNodeCliInspectArguments: false,
-        enableEmbeddedAsarIntegrityValidation: false,
-        onlyLoadAppFromAsar: true,
-        loadBrowserProcessSpecificV8Snapshot: false,
-        grantFileProtocolExtraPrivileges: false,
-    },
-    toolsets: {
-        appimage: "1.0.3",
+        mirror: "https://github.com/Alex313031/electron-legacy/releases/download/v",
     },
 };
 

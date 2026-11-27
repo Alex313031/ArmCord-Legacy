@@ -8,7 +8,8 @@
 
 import fs from "node:fs/promises";
 import path from "node:path";
-import AppImageTarget from "app-builder-lib/out/targets/appimage/AppImageTarget.js";
+// Path as of app-builder-lib 24; 26 moved it to out/targets/appimage/.
+import AppImageTarget from "app-builder-lib/out/targets/AppImageTarget.js";
 
 let isApplied = false;
 
@@ -73,3 +74,6 @@ exec "$SCRIPT_DIR/${this.packager.executableName}.bin" "$([ "$IS_STEAMOS" == 1 ]
         return ret;
     };
 }
+
+// electron-builder 24 loads this file by path and calls its default export.
+export default applyAppImageSandboxFix;
